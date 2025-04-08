@@ -1,0 +1,43 @@
+name: main
+
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch:
+
+jobs:
+  pulumi-up:
+    name: Pulumi Up using OIDC and ESC
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        working-directory: ./ppinfra
+        run: npm install
+
+      - name: Configure AWS credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::975050105141:role/PulumiOIDCRole
+          aws-region: us-west-2
+
+      - name: Pulumi Deploy using ESC
+        uses: pulumi/actions@v5
+        with:
+          command: up
+          stack-name: sahil1610patel/myworkshop/dev
+          work-dir: ./ppinfra
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}

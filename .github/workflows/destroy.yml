@@ -36,7 +36,7 @@ jobs:
         uses: pulumi/actions@v5
         with:
           command: destroy
-          stack-name: pulumi-lab8/dev
+          stack-name: vraj-patel-exe/pulumi-lab8/dev
           work-dir: ./ppinfra
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
